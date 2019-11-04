@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <select id="province" onchange="func1(this)">
+        <option>省份</option>
+    </select>
+    <select id="city">
+        <option>城市</option>
+    </select>
+    <script>
+        data={"安徽":["马鞍山","合肥","芜湖","铜陵","蚌埠"],"江苏":["南京","苏州","无锡","常州","南通"],"山东":["济南","青岛","即墨","蓬莱","泰州"]};
+        var pro=document.getElementById("province");      //找到省份的标签对象
+        var cit=document.getElementById("city");          //找到城市的标签对象
+
+        for (var k in data){                              //遍历data数据 k是键 省份名
+            var opt=document.createElement("option");       //创建option的标签
+            pro.appendChild(opt);                           //添加创建的option标签到省份里
+            opt.innerHTML=k;                                 // 把k的键的文本 添加到标签内
+            }
+
+        function func1(ev) {
+            cit.options.length=0;                           //这里使用了技巧 用options.length=0清空了每次点击后添加的option
+            for(var i in data[ev.value] ){                 // this.value是原来省份里的键值 
+                var op=document.createElement("option");         //创建option的标签
+
+                cit.appendChild(op);                         //添加创建的option
+                op.innerHTML=data[ev.value][i];              // 注意: i不是键内数据的内容 是索引 不能直接=i
+            }
+        }
+
+    </script>
+</body>
+</html>

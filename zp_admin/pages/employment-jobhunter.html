@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>求职联系</title>
+
+	<!-- <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css">
+
+	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  	<script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.js"></script>
+  	<link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet">
+
+  	<link rel="stylesheet" href="./layui/css/layui.css">
+  	<link rel="stylesheet" type="text/css" href="./css/index.css">
+  	 -->
+  	<style>
+  		.nav {
+			background-color: #F1F1F1;
+			margin-right: -15px;
+			margin-left: -16px;
+  		}
+  		.top #btn_back {
+  			float: right;
+  			margin-right: -165px;
+  		}
+  		table td {
+  			text-align: center;
+  		}
+  	</style>
+	
+</head>
+<body>
+	<!-- 容器 -->
+	<div class="container-fluid">
+		<!-- 导航列表 -->
+		<ul class="nav nav-tabs mb-4" style="font-size:18px; font-weight:800;">
+			<li class="nav-item">
+				<a class="nav-link active" href="#">求职列表</a>
+			</li>
+		</ul>
+		<!-- / 导航列表 -->
+		<!-- 按钮 -->
+		<button id="btn_add_empjobhunt" class="btn btn-outline-primary mb-3">添加</button>
+		<!-- / 按钮 -->
+		<!-- 通过id查询 -->
+		<div class="form-group row search" style="float:right">
+			<select id="select_id" class="rounded-left rounded-right col-7" style="height:40px;"></select>
+			<button id="btn_findById" class="btn btn-outline-success mb-2">查询</button>
+		</div>
+		<!-- / 通过id查询 -->
+
+		<div class="top">
+			<!-- 待联系 -->
+			<button id="btn_waitContact" class="btn btn-outline-secondary mb-3">待联系</button>
+			<!-- 稍后联系 -->
+			<button id="btn_laterContact" class="btn btn-outline-secondary mb-3">稍后联系</button>
+			<!-- 已联系 -->
+			<button id="btn_alreadyContact" class="btn btn-outline-secondary mb-3">已联系</button>
+			
+			<!-- 按钮 -->
+			<button id="btn_back" class="btn btn-outline-warning mb-3" style="display:none;">返回</button>
+
+		</div>
+		<!-- / 查询 -->
+		<!-- 表格 -->
+		<table class="table table-hover table-bordered" id="empjobhunt_table">
+			<thead class="bg-dark text-white font-weight-bold">
+				<tr>
+					<td>#</td>
+					<td>求职者id</td>
+					<td>意向职业id</td>
+					<td>简历</td>
+					<td>求职时间</td>
+					<td>备注</td>
+					<td>操作</td>
+				</tr>
+			</thead>
+			<tbody>
+				
+			</tbody>
+		</table>
+		<!-- / 表格 -->
+		<!-- 分页 -->
+		<div class="ym">
+	        <ul></ul>
+	    </div>
+	    <!-- /分页 -->
+	</div>
+	<!-- / 容器 -->
+	
+	<script>	
+		// =======提前声明的代码
+		var baseURL = "http://203.195.246.58:7777";
+		var myId;
+		//分页
+		function getpage(cpage,sum_page){
+			var list="";//数字列表
+			var num=2;//列表前后有几个数字
+			var num_page=cpage;//当前页码
+		    var new_num;//动态页面
+		    // 当前数字之前
+		    for(i=num;i>=1;i--){
+			    // 从大向小走，刚开始最大每次减一
+			    new_num=num_page-i;
+			    if(new_num>=1){
+			      list+="<li  class='btn-group'><a href='#' onclick='loadData("+new_num+")'>"+new_num +"</a></li>"
+			    }
+		    }
+		    // 当前数字
+		    list+="<li>"+cpage+"</li>";
+		    //当前数字之后
+		    for(i=1;i<=num;i++){
+			    new_num=num_page+i
+			    if(new_num<=sum_page){
+			        list+="<li  class='btn-group'><a href='#' onclick='loadData("+new_num+")'>"+new_num +"</a></li>";
+			    }else{
+			    	break;
+			    }
+			}
+			$(".ym ul").empty();
+			$(".ym ul").append(list);
+		}
+		// 初始化数据
+		function loadData(page){
+			var url = baseURL+"/EmploymentJobhunter/findAll";
+			$.get(url,function(result){
+				console.log(1);
+				var data=result.data;
+			    console.log(data);
+			    var total=data.length;//总个数
+			    var nums=5;//一页显示多少条记录
+			    var sum_page;//总页数
+			    // var cpage=1;//当前在多少页
+			    // 计算总页码
+			    if(total%nums==0){
+			    	sum_page=parseInt(total/nums);
+			    }else{
+			    	sum_page=parseInt(total/nums+1)
+			    }
+			    var newdata=[];//新数据
+			    var cpage=page;//改变当前页面
+			    var i=(cpage-1)*nums;
+			    for(j=0;j<=4;j++){//循环5次调用数据
+			    	if (data[i+j]==undefined) {
+			    		break;
+			    	}
+			    	newdata[j]=data[i+j];
+			    }
+			    //展示数据
+				if(result.status === 200){
+					$("#empjobhunt_table tbody").empty();
+					newdata.forEach(function(item){
+						//时间戳转换
+						var timestamp = new Date(item.askTime);
+						var newAskTime = moment(timestamp).format("YYYY-MM-DD HH:mm");
+						$("#empjobhunt_table tbody").append(`
+							<tr>
+								<td><input type="checkbox" value=`+item.id+` /></td>
+								<td>`+item.jobhunterId+`</td>
+								<td>`+item.employmentId+`</td>
+								<td>
+									<a class="btn_viewResume" href="javascript:void(0)">查看</a>
+								</td>
+								<td>`+newAskTime+`</td>
+								<td>`+item.remark+`</td>
+								<td>	
+									<a class="btn_upd_empjobhunt" href="javascript:void(0)">修改</a>
+									<a class="btn_del_empjobhunt" href="javascript:void(0)">删除</a>
+								</td>
+							</tr>
+						`);
+					});
+					getpage(cpage,sum_page);
+
+					//下拉列表,在页面加载的时候执行该函数,初始化id
+					//清空下拉列表
+					$("#select_id").empty();
+					$("#select_id").append(`<option selected disabled>请选择id查询</option>`);
+					//遍历结果
+					result.data.forEach(function(item){
+						// console.log(item);
+						//将id追加到下拉列表中
+						$("#select_id").append(`<option value="`+item.id+`">`+item.id+`</option>`);
+					});
+				}
+			});
+		}
+		//初始化求职者id
+		function initJobhunterId(){
+			//获取参数
+			var url = baseURL+"/Jobhunter/findAll";
+			$.get(url,function(result){
+				//清空下拉菜单
+				$("#empjobhunt_form select[name=jobhunterId]").empty();
+				//将求职者id追加到下拉菜单中
+				result.data.forEach(function(item){
+					$("#empjobhunt_form select[name=jobhunterId]").append(`<option value="`+item.id+`">`+item.id+`</option>`);
+				});
+			});
+		}
+		//初始化意向职位id
+		function initEmploymentId(){
+			//获取参数
+			var url = baseURL+"/Employment/findAll";
+			$.get(url,function(result){
+				//清空下拉菜单
+				$("#empjobhunt_form select[name=employmentId]").empty();
+				//将求职者id追加到下拉菜单中
+				result.data.forEach(function(item){
+					$("#empjobhunt_form select[name=employmentId]").append(`<option value="`+item.id+`">`+item.id+`</option>`);
+				});
+			});
+		}
+		//提交表单（添加/修改求职信息）
+		function submitEmpjobhunt(){
+			//获取参数
+			var jobhunterId = $("#empjobhuntModal select[name=jobhunterId]").val();
+			var employmentId = $("#empjobhuntModal select[name=employmentId]").val();
+			var remark = $("#empjobhuntModal select[name=remark]").val();
+			if(myId){
+				//如果id存在，即为修改
+				var data = {id:myId,jobhunterId,employmentId,remark};
+				// alert(data);
+				//将id置空，否则点击修改后再次点击添加还是修改
+				myId = "";
+				//ajax
+				var url = baseURL+"/EmploymentJobhunter/saveOrUpdate";
+				$.post(url,data,function(result){
+					if(result.status === 200){
+						closeEmpjobhuntModal();
+						alert("修改成功");
+						loadData(1);
+					}else{
+						alert(result.message);
+					}
+				});
+				$("#empjobhuntModal").modal("hide");
+			}else{
+				//id不存在，即添加
+				var data = {jobhunterId,employmentId,remark};
+				var url = baseURL+"/EmploymentJobhunter/saveOrUpdate";
+				$.post(url,data,function(result){
+					if(result.status === 200){
+						loadData(1);
+					}
+				});
+				$("#empjobhuntModal").modal("hide");
+			}
+		}
+		//关闭模态框
+		function closeEmpjobhuntModal(){
+			$("#empjobhuntModal").modal("hide");
+		}
+
+		// 根据id查询对应的求职信息
+		function findById(){
+			$("#btn_findById").on("click",function(){
+				var id = $("#select_id").val();  //将当前点击的option的值赋给id
+				// alert(id);
+				var url = baseURL+"/EmploymentJobhunter/findById";
+				var data = "id="+id;
+				$.get(url,data,function(result){
+					// alert(result.data);
+					// 根据id查询求职信息时，需要将原先表格中的数据清空，再追加根据id新查询到的数据
+					$("#empjobhunt_table tbody").empty();
+					//时间戳转换
+					var timestamp = new Date(result.data.askTime);
+					var newAskTime = moment(timestamp).format("YYYY-MM-DD HH:mm");
+					$("#empjobhunt_table tbody").append(`
+						<tr>
+							<td><input type="checkbox" value=`+result.data.id+` /></td>
+							<td>`+result.data.jobhunterId+`</td>
+							<td>`+result.data.employmentId+`</td>
+							<td>
+								<a class="btn_viewResume" href="javascript:void(0)">查看</a></td>
+							<td>`+newAskTime+`</td>
+							<td>`+result.data.remark+`</td>
+							<td>	
+								<a class="btn_upd_empjobhunt" href="javascript:void(0)">修改</a>
+								<a class="btn_del_empjobhunt" href="javascript:void(0)">删除</a>
+							</td>
+						</tr>
+					`);
+				});
+			});
+		}
+		//基本功能
+		$(function(){
+			//点击查询时返回按钮显示
+			$("#btn_findById").click(function(){
+				$("#btn_back").show();
+			})
+			//还原数据
+			$("#btn_back").click(function(){
+				//点击返回按钮时重新加载数据
+				loadData(1);
+				$("#btn_back").hide();  //隐藏返回按钮
+			});
+
+			//为删除/修改绑定事件
+			$("#empjobhunt_table tbody").on("click","a",function(){
+				switch(this.className){
+					//通过id删除求职信息
+					case "btn_del_empjobhunt":
+						if(confirm("确定要删除吗?")){
+							var id = $(this).parents("tr").find("input").val();
+							// alert(id);
+							var url = baseURL+"/EmploymentJobhunter/deleteById";
+							var data = "id="+id;
+							$.post(url,data,function(result){
+								if(result.status === 200){
+									loadData(1);
+									alert("删除成功");
+								}else{
+									alert(result.message);
+								}
+							});
+						}
+					break;
+					// 通过id修改求职信息
+					case "btn_upd_empjobhunt":
+						//点击修改时，显示对应的模态框进行修改
+						$("#empjobhuntModal").modal("show");
+						myId = $(this).parents("tr").find("input").val();
+						//获取原始数据
+						var jobhunterId = this.parentNode.parentNode.children[1].innerText;
+						var employmentId = this.parentNode.parentNode.children[2].innerText;
+						var remark = this.parentNode.parentNode.children[4].innerText;
+						//将当前数据放到对应的模态框中
+						$("#empjobhuntModal select[name=jobhunterId]").val(jobhunterId);
+						$("#empjobhuntModal select[name=employmentId]").val(employmentId);
+						$("#empjobhuntModal select[name=remark]").val(remark);
+						var data = {jobhunterId,employmentId,remark};
+						// console.log(data);
+					break;
+					//查看简历
+					case "btn_viewResume":
+						// alert(1)
+						//显示简历模态框
+						$("#viewResumeModal").modal("show");
+						// var id = $(this).parents("tr").find("input").val();
+						//根据求职者id找到求职者信息
+						var jobhunterId = this.parentNode.parentNode.children[1].innerText;
+						var url = baseURL+"/Jobhunter/findById";
+						var data = "id="+jobhunterId;
+						// alert(data);
+						$.get(url,data,function(result){
+							// console.log(result.data.realname);
+							//将求职者的对应信息填充到简历中
+							$("#viewResumeModal input[name=realname]").val(result.data.realname);  //标题（真实姓名）
+							$("#viewResumeModal input[name=gender]").val(result.data.gender);
+							$("#viewResumeModal input[name=education]").val(result.data.education);
+							$("#viewResumeModal input[name=birth]").val(result.data.birth);
+							$("#viewResumeModal input[name=workTime]").val(result.data.workTime);
+						});
+					break;
+				}
+			});
+		});
+		//待联系，已联系，稍后联系高亮显示信息
+		var num=0;//记录第几次点击查询框
+		function highLight(){
+			var keywork = $("#keyword").val();//输入框的值
+			var test=$("#text").textSearch(keywork);
+	        var arr=$("span");
+			var spanEle=$("span[rel=mark]");
+			var spanNum=spanEle.length;
+			$(spanEle[num]).focus($(spanEle[num]).css('background','red'));
+			var hig=$(spanEle[num]).offset().top-200;
+			$(document).scrollTop(hig*1);
+			num++;
+			if(num>spanNum){
+				num=0;
+			}
+		}
+			
+		//========文档加载完毕后执行
+		$(function(){
+			//初始化数据
+			loadData(1);
+			//根据id查询
+			findById();
+			//为添加按钮绑定事件（弹出模态框）
+			$("#btn_add_empjobhunt").click(function(){
+				$("#empjobhuntModal").modal("show");
+			});
+			//监听模态框的关闭
+			$("#empjobhuntModal").on("hidden.bs.modal",function(){
+				$(this).find("form")[0].reset();
+			});
+			$("#empjobhuntModal").on("show.bs.modal",function(){
+				initJobhunterId();
+				initEmploymentId();
+			});
+		});
+	</script>
+	
+</body>
+</html>

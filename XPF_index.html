@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>招聘网</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://at.alicdn.com/t/font_1445651_c5t1t9v9exo.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- 头部导航 -->
+        <div class="row" id="header">
+            <div class="col-2 text-right">北京</div>
+            <div class="col-9 text-right">
+                <ul>
+                    <li>个人中心</li>
+                    <li>登录/注册</li>
+                </ul>
+            </div>
+            <div class="col-1"></div>
+        </div>
+        <!-- 头部搜索 -->
+        <div class="row" id="search">
+           <div class="col-3">
+               <img src="./images/index/u135.png" alt="">
+           </div>
+           <div class="col-7">
+               <form style="position: relative;">
+                   <input type="text" class="form-control" placeholder="搜索职位">
+                   <button id="search_job" class="btn btn-info" style="position: absolute;top: 0;right: 0;width: 100px;background-color: #128FED;">搜索职位</button>
+               </form>
+           </div>
+           <div class="col-2 text-right">
+               <button class="btn btn-info">发布招聘</button>
+           </div>
+        </div>
+        <!-- 头部索引 -->
+        <div id="index">
+            <div id="index_job">
+                <div class="title">职位:</div>
+                <div>
+                    <ul id="add_job">
+                        <li class="current">全部</li>    
+                    </ul>
+                </div>
+            </div>
+            <div id="index_location">
+                <div class="title">位置:</div>
+                <div>
+                    <ul id="add_location">
+                        <li class="current">全部</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="index_welfare">
+                <div class="title">福利:</div>
+                <div>
+                    <ul id="add_welfare">
+                        <li class="current">全部</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="index_selected">
+                <div class="title">已选:</div>
+                <div>
+                    <ul id="add_selected">
+                        <div id="job_div">
+                            <li></li>
+                            <i class="iconfont icon-baseline-close-px" id="closeJob"></i>
+                        </div>
+                        <div id="city_div">
+                            <li></li>
+                            <i class="iconfont icon-baseline-close-px" id="closeCity"></i>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 页面切换部分 -->
+        <div class="row" id="content">
+            
+        </div>
+        <!-- 报名参加模态框 -->
+        <div class="modal fade" id="signUpModal">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header" style="position: relative;">
+                <h5 class="modal-title" style="position: absolute;left: 40%">请选择报名方式</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="margin-left: 16em;">
+                <button class="btn btn-info">简历报名</button>
+                <button class="btn btn-info" style="margin-left:2em;" id="add_signUp">填写报名信息</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+
+        <!-- 添加报名信息模态框 -->
+        <div class="modal fade" id="addModal">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header" style="background-color: #F7F7F7;">
+                <h4 class="modal-title" style="margin-left: 2em;">快速报名</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form>
+                  <div class="form-group row">
+                    <div class="col-2 text-right">
+                        <label for="input_username">姓名</label>
+                    </div>
+                    <div class="col-10">
+                        <input type="text" class="form-control" id="input_username" placeholder="请输入2-4位汉字">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                      <div class="col-2 text-right">
+                        <label for="input_gender">性别</label>
+                      </div>
+                      <div class="col-10">
+                        <div class="form-check form-check-inline" id="input_gender">
+                          <input class="form-check-input" type="radio" name="gender" id="gender_male" value="男">
+                          <label class="form-check-label" for="gender_male">男</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input class="form-check-input" type="radio" name="gender" id="gender_female" value="女">
+                          <label class="form-check-label" for="gender_female">女</label>
+                        </div>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <div class="col-2 text-right">
+                        <label for="input_birth">出生年份</label>
+                      </div>
+                      <div class="col-10">
+                        <input type="text" class="form-control" id="input_birth" placeholder="请输入出生年份">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <div class="col-2 text-right">
+                        <label for="input_education">最高学历</label>
+                      </div>
+                      <div class="col-10">
+                        <form>
+                          <select name="" id="input_education" class="form-control">
+                            <option style="display: none;">请选择学历</option>
+                            <option>小学</option>
+                            <option>初中</option>
+                            <option>高中</option>
+                            <option>专科</option>
+                            <option>本科</option>
+                            <option>研究生</option>
+                            <option>博士</option>
+                          </select>
+                        </form>
+                      </div>
+                    </div>
+                  <div class="form-group row">
+                    <div class="col-2 text-right">
+                        <label for="input_customerId">工作经验</label>
+                    </div>
+                    <div class="col-10">
+                        <select name="" id="input_customerId" class="form-control">
+                            <option value="" style="display: none;">请选择工作经验</option>
+                        </select>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-2 text-right">
+                        <label for="input_">手机号</label>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" class="form-control" id="input_username" placeholder="请输入手机号">
+                    </div>
+                    <div class="col-3 text-right">
+                        <button class="btn" style="background-color: #FF6600;color: #fff;">获取验证码</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <div class="col-2"></div>
+                <div class="col-8 text-center">
+                    <button type="button" class="btn" style="width:120px;background-color: #0970D6;color: #fff;">完成报名</button>
+                    <button type="button" class="btn btn-outline-primary" style="width: 100px;">取消</button>
+                </div>
+                <div class="col-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 页面底部 -->
+        <div class="row" id="footer">
+            author：许品锋
+        </div>
+    </div>
+</body>
+<script>
+    var baseURL = 'http://203.195.246.58:7777';
+    // 追加职位信息
+    function loadJob(){
+        var url = baseURL+'/Jobs/findAll';
+        $.get(url,function(result){
+            result.data.forEach(function(item){
+                var newIndexJob = $(`
+                    <li>`+item.name+`</li>
+                `);
+                $('#add_job').append(newIndexJob);
+            })
+        })
+    }
+    // 追加位置信息
+    function loadLocation(){
+        var url = baseURL+'/Employment/findAll';
+        $.get(url,function(result){
+            result.data.forEach(function(item){
+                var newIndexLocation = $(`
+                    <li>`+item.city+`</li>
+                `);
+                $('#add_location').append(newIndexLocation);
+            })
+        })
+    }
+    // 追加福利信息
+    function loadWelfare(){
+        var url = baseURL+'/Welfare/findAll';
+        $.get(url,function(result){
+            result.data.forEach(function(item){
+                var newIndexWelfare = $(`
+                    <li>`+item.name+`</li>
+                `);
+                $('#add_welfare').append(newIndexWelfare);
+            })
+        })
+    }
+    // 追加招聘信息
+    function loadEmployment(){
+        var url = baseURL+'/Employment/findAll';
+        $.get(url,function(result){
+            result.data.forEach(function(item){
+                var newEmployment = $(`
+                    <div class='row jobItem'>
+                        <div class="col-5">
+                            <h4 class="jobTitle">`+item.title+`</h4>
+                            <div class="jobSalary">`+item.salary+`元/月</div>
+                            <div class="jobWelfare">`+item.welfare+`</div>
+                        </div>
+                        <div class="col-5 content_description">
+                            <div>
+                                <div>工作时间：`+item.workingHours+`</div>
+                                <div>招聘人数：`+item.num+`</div>
+                            </div>
+                            <div>
+                                <div>工作类型：`+item.job+`</div>
+                                <div>工作地点：`+item.city+`</div>
+                            </div>
+                        </div>
+                        <div class="col-2 text-right">
+                            <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                        </div>
+                    </div>
+                `);
+                $('#content').append(newEmployment);
+            })
+        })
+    }
+
+    $(function(){
+        // 初始化所有数据
+        loadJob();
+        loadLocation();
+        loadWelfare();
+        loadEmployment();
+        // 头部搜索职位按钮
+        $('#search_job').click(function(){
+            var job = $(this).parents('form').find('input').val();
+            var url = baseURL+'/Employment/findByJob';
+            var data = {
+                job:job
+            };
+            $.get(url,data,function(result){
+                $('#content').empty();
+                result.data.forEach(function(item){
+                    var newEmployment = $(`
+                        <div class='row jobItem'>
+                            <div class="col-5">
+                                <h4 class="jobTitle">`+item.title+`</h4>
+                                <div class="jobSalary">`+item.salary+`元/月</div>
+                                <div class="jobWelfare">`+item.welfare+`</div>
+                            </div>
+                            <div class="col-5 content_description">
+                                <div>
+                                    <div>工作时间：`+item.workingHours+`</div>
+                                    <div>招聘人数：`+item.num+`</div>
+                                </div>
+                                <div>
+                                    <div>工作类型：`+item.job+`</div>
+                                    <div>工作地点：`+item.city+`</div>
+                                </div>
+                            </div>
+                            <div class="col-2 text-right">
+                                <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                            </div>
+                        </div>
+                    `);
+                    $('#content').append(newEmployment);
+                })
+            })   
+            return false;
+        });
+        // 鼠标点击li变色
+        $('#index').on('click','li',function(){
+            $(this).addClass('current');
+            $(this).siblings().removeClass('current');
+        });
+        // 职位索引
+        var job = '';
+        $('#add_job').on('click','li',function(){
+            // 将当前点击的li的文本拿到，并赋值给全局变量job，之后将job的值赋值给已选条件的li
+            // 拿值
+            job = $(this).text();
+            // 赋值
+            $('#job_div li').text(job);
+            if($(this).text() == '全部'){
+                loadEmployment();
+            }else{
+                var url = baseURL+'/Employment/findByJob';
+                var data = {
+                    job:job
+                };
+                $.get(url,data,function(result){
+                    $('#content').empty();
+                    result.data.forEach(function(item){
+                        if(title != ''){
+                            if(item.city == title){
+                                var newEmployment = $(`
+                                    <div class='row jobItem'>
+                                        <div class="col-5">
+                                            <h4 class="jobTitle">`+item.title+`</h4>
+                                            <div class="jobSalary">`+item.salary+`元/月</div>
+                                            <div class="jobWelfare">`+item.welfare+`</div>
+                                        </div>
+                                        <div class="col-5 content_description">
+                                            <div>
+                                                <div>工作时间：`+item.workingHours+`</div>
+                                                <div>招聘人数：`+item.num+`</div>
+                                            </div>
+                                            <div>
+                                                <div>工作类型：`+item.job+`</div>
+                                                <div>工作地点：`+item.city+`</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 text-right">
+                                            <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                                        </div>
+                                    </div>
+                                `);
+                                $('#content').append(newEmployment);
+                            }
+                        }else{
+                            var newEmployment = $(`
+                                <div class='row jobItem'>
+                                    <div class="col-5">
+                                        <h4 class="jobTitle">`+item.title+`</h4>
+                                        <div class="jobSalary">`+item.salary+`元/月</div>
+                                        <div class="jobWelfare">`+item.welfare+`</div>
+                                    </div>
+                                    <div class="col-5 content_description">
+                                        <div>
+                                            <div>工作时间：`+item.workingHours+`</div>
+                                            <div>招聘人数：`+item.num+`</div>
+                                        </div>
+                                        <div>
+                                            <div>工作类型：`+item.job+`</div>
+                                            <div>工作地点：`+item.city+`</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                                    </div>
+                                </div>
+                            `);
+                            $('#content').append(newEmployment);
+                        }
+                    });
+                })
+            }
+        });
+
+        // 位置索引
+        var title = '';
+        $('#add_location').on('click','li',function(){
+            if($(this).text() == '全部'){
+                loadEmployment();
+            }else{
+                title = $(this).text();
+                $('#city_div li').text(title);
+                var url = baseURL+'/Employment/findByCity';
+                var data = {
+                    title:title
+                };
+                $.get(url,data,function(result){
+                    $('#content').empty();
+                    result.data.forEach(function(item){
+                        // 如果job不为空，说明第一次点击过了职位搜索，即在点击位置搜索的时候，已存在筛选条件job
+                        if(job != ''){
+                            // 如果不加判断item.job == job 相当于直接根据当前地址查询了所有数据
+                            if(item.job == job){
+                                var newEmployment = $(`
+                                    <div class='row jobItem'>
+                                        <div class="col-5">
+                                            <h4 class="jobTitle">`+item.title+`</h4>
+                                            <div class="jobSalary">`+item.salary+`元/月</div>
+                                            <div class="jobWelfare">`+item.welfare+`</div>
+                                        </div>
+                                        <div class="col-5 content_description">
+                                            <div>
+                                                <div>工作时间：`+item.workingHours+`</div>
+                                                <div>招聘人数：`+item.num+`</div>
+                                            </div>
+                                            <div>
+                                                <div>工作类型：`+item.job+`</div>
+                                                <div>工作地点：`+item.city+`</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 text-right">
+                                            <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                                        </div>
+                                    </div>
+                                `);
+                                $('#content').append(newEmployment);
+                            }
+                        }else{
+                            var newEmployment = $(`
+                                <div class='row jobItem'>
+                                    <div class="col-5">
+                                        <h4 class="jobTitle">`+item.title+`</h4>
+                                        <div class="jobSalary">`+item.salary+`元/月</div>
+                                        <div class="jobWelfare">`+item.welfare+`</div>
+                                    </div>
+                                    <div class="col-5 content_description">
+                                        <div>
+                                            <div>工作时间：`+item.workingHours+`</div>
+                                            <div>招聘人数：`+item.num+`</div>
+                                        </div>
+                                        <div>
+                                            <div>工作类型：`+item.job+`</div>
+                                            <div>工作地点：`+item.city+`</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2 text-right">
+                                        <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                                    </div>
+                                </div>
+                            `);
+                            $('#content').append(newEmployment);
+                        }
+                    })
+                })
+            }
+        });
+   
+        // 已选条件-职位
+        $('#closeJob').click(function(){
+            // 清空已选条件
+            $(this).parents('#job_div').find('li').empty();
+            // 将职位搜索的li置为初始样式
+            $('#add_job li').removeClass('current');
+            $('#add_job li:nth-child(1)').addClass('current');
+            // 置空job,否则就算样式消除,条件仍然存在
+            job = '';
+            // 调用根据city查找招聘信息的接口
+            if(title == ''){
+                // 如果title为空，说明只有一个职位条件，在点击关闭的时候，调用加载所有的函数即可
+                loadEmployment();
+            }else{
+                var url = baseURL+'/Employment/findByCity';
+                var data = {
+                    title:title
+                };
+                $.get(url,data,function(result){
+                    $('#content').empty();
+                    result.data.forEach(function(item){
+                        // 如果job不为空，说明第一次点击过了职位搜索
+                        // 如果不加判断item.job == job 相当于直接根据当前地址查询了所有
+                        var newEmployment = $(`
+                            <div class='row jobItem'>
+                                <div class="col-5">
+                                    <h4 class="jobTitle">`+item.title+`</h4>
+                                    <div class="jobSalary">`+item.salary+`元/月</div>
+                                    <div class="jobWelfare">`+item.welfare+`</div>
+                                </div>
+                                <div class="col-5 content_description">
+                                    <div>
+                                        <div>工作时间：`+item.workingHours+`</div>
+                                        <div>招聘人数：`+item.num+`</div>
+                                    </div>
+                                    <div>
+                                        <div>工作类型：`+item.job+`</div>
+                                        <div>工作地点：`+item.city+`</div>
+                                    </div>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                                </div>
+                            </div>
+                        `);
+                        $('#content').append(newEmployment);
+                    })
+                })
+            }
+        })
+        // 已选条件-位置
+        $('#closeCity').click(function(){
+            // 清空已选条件
+            $(this).parents('#city_div').find('li').empty();
+            // 将位置搜索的li置为初始样式
+            $('#add_location li').removeClass('current');
+            $('#add_location li:nth-child(1)').addClass('current');
+            title = '';
+            // 调用根据job查找招聘信息的接口
+            if(job == ''){
+                // 如果job为空，说明只有一个位置条件
+                loadEmployment();
+            }else{
+                var url = baseURL+'/Employment/findByJob';
+                var data = {
+                    job:job
+                };
+                $.get(url,data,function(result){
+                    $('#content').empty();
+                    result.data.forEach(function(item){
+                        var newEmployment = $(`
+                            <div class='row jobItem'>
+                                <div class="col-5">
+                                    <h4 class="jobTitle">`+item.title+`</h4>
+                                    <div class="jobSalary">`+item.salary+`元/月</div>
+                                    <div class="jobWelfare">`+item.welfare+`</div>
+                                </div>
+                                <div class="col-5 content_description">
+                                    <div>
+                                        <div>工作时间：`+item.workingHours+`</div>
+                                        <div>招聘人数：`+item.num+`</div>
+                                    </div>
+                                    <div>
+                                        <div>工作类型：`+item.job+`</div>
+                                        <div>工作地点：`+item.city+`</div>
+                                    </div>
+                                </div>
+                                <div class="col-2 text-right">
+                                    <button class="btn btn-info" style="background-color: #128FED;">报名参加</button>
+                                </div>
+                            </div>
+                        `);
+                        $('#content').append(newEmployment);
+                    })
+                })
+            }
+        })
+        // 报名参加按钮
+        $('#content').on('click','button',function(){
+            $('#signUpModal').modal('show');
+        });
+        // 填写报名信息
+        $('#add_signUp').click(function(){
+            $('#addModal').modal('show');
+            $('#signUpModal').modal('hide');
+        });
+    })
+
+</script>
+<style>
+    *{
+        list-style: none;
+    }
+    label{
+        font-weight: bold;
+    }
+    .noStyle{
+        background-color: #fff !important;
+        color: #333 !important;
+    }
+    .current{
+        background-color: #128FED;
+        color: white;
+        text-align: center;
+        border-radius: 2px;
+    }
+    #header{
+        background-color: #FAFAFA;
+        height: 36px;
+        line-height: 36px;
+        border-bottom: 1px solid #333;
+    }
+    #header ul li{
+        float: right;
+        margin-left: 1em;
+    }
+    #search{
+        height: 100px;
+        width: 80%;
+        margin: auto;
+        border-bottom: 1px solid #333;
+        padding: 2em 0;
+    }
+    .title{
+        font-weight: bold;
+    }
+    #index,
+    #content,
+    #footer{
+        width: 80%;
+        margin: auto;
+        margin-top: 1em;
+    }
+    #content{
+        border-top: 2px solid #333;
+        padding-top: 1em;
+    }
+    #index_job,
+    #index_location,
+    #index_welfare,
+    #index_selected{
+        height: 40px;
+        line-height: 40px;
+    }
+    #index_job div,
+    #index_location div,
+    #index_welfare div,
+    #index_selected div{
+        float: left;
+        width: 100%;
+    }
+    #index_job div:last-child,
+    #index_location div:last-child,
+    #index_welfare div:last-child,
+    #index_selected div:last-child{
+        border-bottom: 1px solid #ccc;
+    }
+    #index_job div:last-child,
+    #index_location div:last-child,
+    #index_welfare div:last-child{
+        padding-bottom: 1em;
+    }
+    #index_job,
+    #index_location,
+    #index_welfare，
+    #index_selected{
+        clear: both;
+        content: '';
+        display: block;
+    }
+    #index_job ul li,
+    #index_location ul li,
+    #index_welfare ul li,
+    #index_selected ul li{
+        float: left;
+        margin-left: 1em;
+        cursor: pointer;
+        padding: 0 1em;
+    }
+    .content_description > div{
+        float: left;
+        width: 200px !important;
+    }
+    #content div{
+        width: 100%;
+    }
+    .jobItem {
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 1em;
+        margin-left: 0 !important;
+        padding: 1em 0;
+    }
+    .jobItem div{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    .jobWelfare{
+        background-color: lightblue;
+        width: 80px !important;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        margin-top: 1em;
+    }
+    #footer{
+        height: 100px;
+        
+    }
+    #add_selected div{
+        width: 150px;
+        float: left;
+    }
+</style>
+</html>

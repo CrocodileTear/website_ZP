@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>招聘网站后台</title>
+
+  <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.10.2/css/all.css">
+  <link rel="stylesheet" href="./layui/css/layui.css">
+  <link rel="stylesheet" type="text/css" href="./css/index.css">
+  
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+  <script src="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/js/bootstrap.js"></script>
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/moment.js/2.24.0/moment.js"></script>
+
+  <script src="./js/index.js"></script>
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo"></div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+   <!--  <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item"><a href="">控制台</a></li>
+      <li class="layui-nav-item"><a href="">商品管理</a></li>
+      <li class="layui-nav-item"><a href="">用户</a></li>
+      <li class="layui-nav-item">
+        <a href="javascript:;">其它系统</a>
+        <dl class="layui-nav-child">
+          <dd><a href="">邮件管理</a></dd>
+          <dd><a href="">消息管理</a></dd>
+          <dd><a href="">授权管理</a></dd>
+        </dl>
+      </li>
+    </ul> -->
+    <div>
+      <!-- <img src="images/ww.png" style="position:absolute;left:83%;top:13%;"> -->
+    </div>
+    <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item">
+        <a href="javascript:;">
+          <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+          John Doe
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="">退出</a></dd>
+          <!-- <dd><a href="">安全设置</a></dd> -->
+        </dl>
+      </li>
+      <!-- <li class="layui-nav-item"><a href="">退了</a></li> -->
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree" id="left_nav"  lay-filter="test">
+        
+        <li class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe68e;</i>首页</a></li>
+        <li url="./pages/business.html" class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe66f;</i>商家管理</a></li>
+        <li url="./pages/employment.html" class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe655;</i>招聘管理</a></li>
+        <li url="./pages/jobhunter.html" class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe770;</i>用户管理</a></li>
+        <li class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe620;</i>模块管理</a></li>
+        <li class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe606;</i>客服管理</a></li>
+        <li class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe631;</i>权限管理</a></li>
+        <li url="./pages/employment-jobhunter.html" class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#xe63b;</i>求职联系</a></li>
+        <li class="layui-nav-item "><a href="javascript:void(0)"><i class="layui-icon">&#x1005;</i>审核模块</a></li>
+        <li class="layui-nav-item "><a href=javascript:void(0)"><i class="layui-icon">&#xe653;</i>app管理</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div style="padding: 15px;">
+   
+      <div class="content">
+        <div id="right_wrapper" style="height:510px;">
+          </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    <!-- © layui.com - 底部固定区域 -->
+  </div>
+</div>
+<script src="./layui/layui.js"></script>
+<script>
+//JavaScript代码区域
+layui.use('element', function(){
+  var element = layui.element;
+  
+});
+</script>
+
+  <!-- 商家管理模态框 -->
+    <div id="businessModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title">添加商家信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeBusinessModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单 -->
+                <form action="/register" id="business_form">
+                  <!-- 企业名称 -->
+                  <div class="form-group row">
+                    <label for="input_name" class="col-2 text-right">企业名称</label>
+                    <div class="col-9">
+                      <input type="text" id="input_name" name="name" class="form-control">
+                    </div>
+                  </div>
+                  <!-- / 企业名称 -->
+                  <!-- 联系人 -->
+                  <div class="form-group row">
+                    <label for="input_contactName" class="col-2 text-right">联系人</label>
+                    <div class="col-9">
+                      <input type="text" id="input_contactName" name="contactName" class="form-control">
+                    </div>
+                  </div>
+                  <!-- / 联系人 -->
+                  <!-- 联系方式 -->
+                  <div class="form-group row">
+                    <label for="input_contactPhone" class="col-2 text-right">联系方式</label>
+                    <div class="col-9">
+                      <input type="text" id="input_contactPhone" name="contactPhone" class="form-control">
+                    </div>
+                  </div>
+                  <!-- / 联系方式 -->
+                  <!-- 行业 -->
+                  <div class="form-group row">
+                    <label for="input_industry" class="col-2 text-right">行业</label>
+                    <div class="col-9">
+                      <input type="text" id="input_industry" name="industry" class="form-control">
+                    </div>
+                  </div>
+                  <!-- / 行业 -->
+                  <!-- 省份 -->
+                  <div class="form-group row">
+                    <label for="input_province" class="col-2 text-right">省份</label>
+                    <div class="col-9">
+                      <select name="province" id="input_province" class="form-control" style="width:50%">
+                        <option selected="" disabled="">请选择省份</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- / 省份 -->
+                  <!-- 城市 -->
+                  <div class="form-group row">
+                    <label for="input_city" class="col-2 text-right">城市</label>
+                    <div class="col-9">
+                      <select name="city" id="input_city" class="form-control" style="width:50%">
+                        <option selected="" disabled="">请选择城市</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- / 城市 -->
+                  <!-- 所在地 -->
+                  <div class="form-group row">
+                    <label for="input_location" class="col-2 text-right">所在地</label>
+                    <div class="col-9">
+                      <input type="text" id="input_location" name="location" class="form-control" style="width:50%">
+                    </div>
+                  </div>
+                  <!-- / 所在地 -->
+                  <!-- 公司规模 -->
+                  <div class="form-group row">
+                    <label for="input_scale" class="col-2 text-right">公司规模</label>
+                    <div class="col-9">
+                      <select name="scale" id="input_scale" class="form-control" style="width:50%">
+                        <option selected="" disabled="">请选择公司规模</option>
+                        <option>大</option>
+                        <option>中</option>
+                        <option>小</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- / 公司规模 -->
+                </form>
+                <!-- / 表单 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" class="btn btn-primary" onclick="closeBusinessModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="submitBusiness()">保存</button>
+            </div>
+          </div>
+      </div>
+    </div>
+  <!-- / 商家管理模态框 -->
+  <!-- 商家管理中的详情模态框 -->
+   <div id="viewBusinessModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title">
+                  <input type="text" id="input_name" name="name" class="form-contol border-0 bg-light">
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeBusinessModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单 -->
+                <form action="/register" id="empjobhunt_form">
+                  <!-- 第一行 -->
+                  <div class="form-group row">
+                   <!-- 性别 -->
+                    <label for="input_gender" class="col-2 text-right">性别：</label>
+                    <div class="col-3">
+                      <input type="text" name="gender" id="input_gender" class="form-control">
+                    </div>
+                    <!-- / 性别 -->
+                    <div class="col-1"></div>
+                    <!-- 学历 -->
+                    <label for="input_education" class="col-2 text-right">最高学历：</label>
+                    <div class="col-3">
+                      <input type="text" id="input_education" name="education" class="form-control">
+                    </div>
+                    <!-- / 学历 -->
+                  </div>
+                  <!-- / 第一行 -->
+                  <!-- 第二行 -->
+                  <div class="form-group row">
+                   <!-- 性别 -->
+                    <label for="input_gender" class="col-2 text-right">性别：</label>
+                    <div class="col-3">
+                      <input type="text" name="gender" id="input_gender" class="form-control">
+                    </div>
+                    <!-- / 性别 -->
+                    <div class="col-1"></div>
+                    <!-- 学历 -->
+                    <label for="input_education" class="col-2 text-right">最高学历：</label>
+                    <div class="col-3">
+                      <input type="text" id="input_education" name="education" class="form-control">
+                    </div>
+                    <!-- / 学历 -->
+                  </div>
+                  <!-- / 第二行 -->
+                  <!-- 第三行 -->
+                  <div class="form-group row">
+                    <!-- 出生日期 -->
+                    <label for="input_birth" class="col-2 text-right">生日：</label>
+                    <div class="col-3">
+                      <input type="text" name="birth" id="input_birth" class="form-control"></input>
+                    </div>
+                    <!-- / 出生日期 -->
+                    <div class="col-1"></div>
+                    <!-- 工作时间 -->
+                    <label for="input_workTime" class="col-2 text-right">工作时间：</label>
+                    <div class="col-3">
+                      <input type="text" name="workTime" id="input_workTime" class="form-control"></input>
+                    </div>
+                    <!-- / 工作时间 -->
+                  </div>
+                  <!-- / 第三行 -->
+                </form>
+                <!-- / 表单 -->
+            </div>
+          </div>
+      </div>
+    </div>
+  <!-- / 商家管理中的详情模态框 -->
+
+  <!-- 招聘管理模态框 -->
+    <div id="employmentModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title">添加招聘信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeEmploymentModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单 -->
+                <form action="/register" id="employment_form">
+                  <!-- 第一行 招聘标题-->
+                  <div class="form-group row">
+                    <label for="input_title" class="col-2 text-right">招聘标题</label>
+                    <div class="col-9">
+                      <input type="text" id="input_title" name="title" class="form-control">
+                    </div>
+                  </div>
+                  <!-- / 第一行 招聘标题-->
+                  <!-- 第二行 -->
+                  <div class="form-group row">
+                    <!-- 福利待遇 -->
+                    <label for="input_welfare" class="col-2 text-right">福利待遇</label>
+                    <div class="col-3">
+                      <input type="text" id="input_welfare" name="welfare" class="form-control">
+                    </div>
+                    <!-- / 福利待遇 -->
+                    <div class="col-1"></div>
+                    <!-- 招聘人数 -->
+                    <label for="input_num" class="col-2 text-right">招聘人数</label>
+                    <div class="col-3">
+                    <input type="text" id="input_num" name="num" class="form-control">
+                    </div>
+                  </div>
+                  <!-- / 招聘人数 -->
+                  <!-- / 第二行 -->
+                  <!-- 第三行 -->
+                  <div class="form-group row">
+                    <!-- 发布人 -->
+                    <label for="input_contactName" class="col-2 text-right">发布人</label>
+                    <div class="col-3">
+                      <input type="text" id="input_contactName" name="contactName" class="form-control">
+                    </div>
+                    <!-- / 发布人 -->
+                    <div class="col-1"></div>
+                    <!-- 联系方式 -->
+                    <label for="input_contactPhone" class="col-2 text-right">联系方式</label>
+                    <div class="col-3">
+                      <input type="text" id="input_contactPhone" name="contactPhone" class="form-control">
+                    </div>
+                    <!-- / 联系方式 -->
+                  </div>
+                  <!-- / 第三行 -->
+                  <!-- 第四行 -->
+                  <div class="form-group row">
+                    <!-- 招聘职位 -->
+                    <label for="input_job" class="col-2 text-right">招聘职位</label>
+                    <div class="col-3">
+                      <input type="text" id="input_job" name="job" class="form-control">
+                    </div>
+                    <!-- / 招聘职位 -->
+                    <div class="col-1"></div> 
+                    <!-- 薪资水平 -->
+                    <label for="input_salary" class="col-2 text-right">薪资水平</label>
+                    <div class="col-3">
+                      <input type="text" id="input_salary" name="salary" class="form-control">
+                    </div>
+                    <!-- / 薪资水平 -->
+                  </div>
+                  <!-- / 第四行 -->
+                  <!-- 第五行 -->
+                  <div class="form-group row">
+                    <!-- 商家id -->
+                    <label for="input_businessId" class="col-2 text-right">商家id</label>
+                    <div class="col-3">
+                      <select id="input_businessId" name="businessId" class="form-control"></select>
+                    </div>
+                    <!-- / 商家id -->
+                    <div class="col-1"></div> 
+                    <!-- 状态 -->
+                    <label for="input_status" class="col-2 text-right">状态</label>
+                    <div class="col-3">
+                      <select id="input_status" name="status" class="form-control"></select>
+                    </div>
+                    <!-- / 状态 -->
+                  </div>
+                  <!-- / 第五行 -->
+                  <!-- 第六行 详细描述 -->
+                  <div class="form-group row">
+                    <label for="input_job" class="col-2 text-right">详细描述</label>
+                    <div class="col-9">
+                      <textarea name="description" id="input_description" class="form-control"></textarea>
+                    </div>
+                  </div>
+                  <!-- / 第六行 详细描述 -->
+                </form>
+                <!-- / 表单 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" class="btn btn-primary" onclick="closeEmploymentModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="submitEmployment()">发布招聘</button>
+            </div>
+          </div>
+      </div>
+    </div>
+  <!-- / 招聘管理模态框 -->
+
+  <!-- 用户管理模态框 -->
+    <div id="jobhunterModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title">添加用户信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeJobhunterModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单 -->
+                <form action="/register" id="jobhunter_form">
+                  <!-- 第一行 -->
+                  <div class="form-group row">
+                    <!-- 用户名 -->
+                    <label for="input_username" class="col-2 text-right">用户名</label>
+                    <div class="col-3">
+                      <input type="text" id="input_username" name="username" class="form-control">
+                    </div>
+                    <!-- / 用户名 -->
+                    <div class="col-1"></div> 
+                    <!-- 密码 -->
+                    <label for="input_password" class="col-2 text-right">密码</label>
+                    <div class="col-3">
+                      <input type="text" id="input_password" name="password" class="form-control">
+                    </div>
+                    <!-- / 密码 -->
+                  </div>
+                  <!-- / 第一行 -->
+                  <!-- 第二行 -->
+                  <div class="form-group row">
+                    <!-- 真实姓名 -->
+                    <label for="input_realname" class="col-2 text-right">真实姓名</label>
+                    <div class="col-3">
+                      <input type="text" id="input_realname" name="realname" class="form-control">
+                    </div>
+                    <!-- / 真实姓名 -->
+                    <div class="col-1"></div>
+                    <!-- 学历 -->
+                    <label for="input_education" class="col-2 text-right">学历</label>
+                    <div class="col-3">
+                      <input type="text" id="input_education" name="education" class="form-control">
+                    </div>
+                    <!-- / 学历 -->
+                  </div>
+                  <!-- / 第二行 -->
+                  <!-- 第三行 -->
+                  <div class="form-group row">
+                     <!-- 求职状态 -->
+                    <label for="input_currentStatus" class="col-2 text-right">求职状态</label>
+                    <div class="col-3">
+                      <select id="input_currentStatus" name="currentStatus" class="form-control"></select>
+                    </div>
+                    <!-- / 求职状态 -->
+                    <div class="col-1"></div>
+                    <!-- 性别 -->
+                    <label for="input_gender" class="col-2 text-right">性别</label>
+                    <div class="col-3">
+                      <select name="gender" id="input_gender" class="form-control">
+                        <option>男</option>
+                        <option>女</option>
+                        <option>保密</option>
+                      </select>
+                    </div>
+                    <!-- / 性别 -->
+                  </div>
+                  <!-- / 第三行 -->
+                  <!-- 第四行 -->
+                  <div class="form-group row">
+                    <!-- 联系方式 -->
+                    <label for="input_telephone" class="col-2 text-right">联系方式</label>
+                    <div class="col-3">
+                      <input type="text" id="input_telephone" name="telephone" class="form-control">
+                    </div>
+                    <!-- / 联系方式 -->
+                    <div class="col-1"></div>
+                    <!-- 简历 -->
+                    <label for="input_resume" class="col-2 text-right">简历</label>
+                    <div class="col-3">
+                      <input type="text" id="input_resume" name="resume" class="form-control">
+                    </div>
+                    <!-- / 简历 -->
+                  </div>
+                  <!-- / 第四行 -->
+                  <!-- 第五行 工作时间 -->
+                  <div class="form-group row">
+                    <label for="input_workTime" class="col-2 text-right">工作时间</label>
+                    <div class="col-9">
+                      <input type="text" name="workTime" id="input_workTime" class="form-control"></input>
+                    </div>
+                  </div>
+                  <!-- / 第五行 工作时间 -->
+                  <!-- 第六行 出生日期 -->
+                  <div class="form-group row">
+                    <label for="input_birth" class="col-2 text-right">出生日期</label>
+                    <div class="col-5" id="date">
+                      <input type="text" name="birth" id="input_birth" class="form-control" placeholder="请选择日期和时间" style="width:85%; border:none;"></input>
+                      <img src="./images/calendar.png" alt="" id="datetime">
+                    </div>
+                  </div>
+                  <!-- / 第六行 出生日期 -->
+                </form>
+                <!-- / 表单 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" class="btn btn-primary" onclick="closeJObhunterModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="submitJobhunter()">保存</button>
+            </div>
+          </div>
+      </div>
+    </div>
+  <!-- / 用户管理模态框 -->
+
+   <!-- 求职信息模态框 -->
+    <div id="empjobhuntModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title">添加求职信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeEmpjobhuntModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单 -->
+                <form action="/register" id="empjobhunt_form">
+                  <!-- 求职者id -->
+                  <div class="form-group row">
+                    <label for="input_jobhunterId" class="col-3 text-center">求职者id</label>
+                    <div class="col">
+                      <select id="input_jobhunterId" name="jobhunterId" class="form-control">
+                      </select>
+                    </div>
+                  </div>
+                  <!-- / 求职者id -->
+                  <!-- 意向职业id -->
+                  <div class="form-group row">
+                    <label for="input_employmentId" class="col-3 text-center">意向职业id</label>
+                    <div class="col">
+                      <select id="input_employmentId" name="employmentId" class="form-control">
+                      </select>
+                    </div>
+                  </div>
+                  <!-- / 意向职业id -->
+                  <!-- 备注 -->
+                  <div class="form-group row">
+                    <label for="input_remark" class="col-3 text-center">备注</label>
+                    <div class="col">
+                      <select id="input_remark" name="remark" class="form-control">
+                        <option selected="" disabled="">请选择备注信息</option>
+                        <option>待联系</option>
+                        <option>已联系</option>
+                        <option>稍后联系</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- / 备注 -->
+                </form>
+                <!-- / 表单 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" class="btn btn-primary" onclick="closeEmpjobhuntModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="submitEmpjobhunt()">保存</button>
+            </div>
+          </div>
+      </div>
+    </div>
+  <!-- / 求职联系模态框 -->
+  <!-- 求职联系中的查看简历模态框 -->
+   <div id="viewResumeModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-light border-0">
+                <h4 class="modal-title">
+                  <input type="text" id="input_realname" name="realname" class="form-contol border-0 bg-light">
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeEmpjobhuntModal()">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 表单 -->
+                <form action="/register" id="empjobhunt_form">
+                  <!-- 第一行 -->
+                  <button id="input_username" class="btn btn-primary btn-sm mt-2 mb-4">个人信息</button>
+                  <!-- / 第一行 -->
+                  <!-- 第二行 -->
+                  <div class="form-group row">
+                   <!-- 性别 -->
+                    <label for="input_gender" class="col-2 text-right">性别：</label>
+                    <div class="col-3">
+                      <input type="text" name="gender" id="input_gender" class="form-control">
+                    </div>
+                    <!-- / 性别 -->
+                    <div class="col-1"></div>
+                    <!-- 学历 -->
+                    <label for="input_education" class="col-2 text-right">最高学历：</label>
+                    <div class="col-3">
+                      <input type="text" id="input_education" name="education" class="form-control">
+                    </div>
+                    <!-- / 学历 -->
+                  </div>
+                  <!-- / 第二行 -->
+                  <!-- 第三行 -->
+                  <div class="form-group row">
+                    <!-- 出生日期 -->
+                    <label for="input_birth" class="col-2 text-right">生日：</label>
+                    <div class="col-3">
+                      <input type="text" name="birth" id="input_birth" class="form-control"></input>
+                    </div>
+                    <!-- / 出生日期 -->
+                    <div class="col-1"></div>
+                    <!-- 工作时间 -->
+                    <label for="input_workTime" class="col-2 text-right">工作时间：</label>
+                    <div class="col-3">
+                      <input type="text" name="workTime" id="input_workTime" class="form-control"></input>
+                    </div>
+                    <!-- / 工作时间 -->
+                  </div>
+                  <!-- / 第三行 -->
+                </form>
+                <!-- / 表单 -->
+            </div>
+          </div>
+      </div>
+    </div>
+  <!-- / 求职联系中的查看简历模态框 -->
+
+  
+</body>
+</html>
